@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'availability_cohort';
-$plugin->version = 2018061900;
-$plugin->release = 'v3.5-r1';
+$plugin->version = 2018072000;
+$plugin->release = 'v3.5-r2';
 $plugin->requires = 2018051300;
 $plugin->maturity = MATURITY_STABLE;

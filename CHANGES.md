@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v3.5-r2
 
 * 2018-07-20 - Fixing PHPDoc errors.
 
