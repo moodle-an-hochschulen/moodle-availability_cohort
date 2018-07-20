@@ -77,7 +77,7 @@ class frontend extends \core_availability\frontend {
     /**
      * Gets all available cohorts.
      *
-     * @param $context
+     * @param \context $context The current context
      * @return array Array of all the cohort objects
      */
     protected function get_all_current_context_cohorts($context) {

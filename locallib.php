@@ -51,10 +51,8 @@ function availability_cohort_is_member($userid, $cohorts) {
  * The function does not check user capability to view/manage cohorts in the given context
  * assuming that it has been already verified.
  *
- * @param context $currentcontext
- * @param int $page number of the current page
- * @param int $perpage items per page
- * @param string $search search string
+ * @param \context $currentcontext The current context
+ *
  * @return array    Array(totalcohorts => int, cohorts => array, allcohorts => int)
  */
 function availability_cohort_cohort_get_cohorts($currentcontext) {
