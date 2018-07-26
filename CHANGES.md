@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2018-07-26 - Improved database query by using another function.
+
 ### v3.5-r2
 
 * 2018-07-20 - Fixing PHPDoc errors.
