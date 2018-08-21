@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v3.5-r3
 
 * 2018-07-26 - Improved database query by using another function.
 
