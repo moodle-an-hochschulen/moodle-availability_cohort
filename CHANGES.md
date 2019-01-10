@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v3.6-r1
 
 * 2019-01-10 - Replaced deprecated Behat test step.
 * 2019-01-09 - Check compatibility for Moodle 3.6, no functionality change.
