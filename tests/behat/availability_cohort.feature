@@ -125,7 +125,7 @@ Feature: availability_cohort
     # Login as admin and create category cohorts.
     And I log out
     And I log in as "admin"
-    And I navigate to "Cohorts" node in "Site administration > Users"
+    And I navigate to "Users > Cohorts" in site administration
     And I click on "Add new cohort" "link"
     And I set the following fields to these values:
       | name      | Cohort 3   |
