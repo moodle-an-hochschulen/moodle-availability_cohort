@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v3.7-r1
 
 * 2019-06-14 - Prepare compatibility for Moodle 3.7.
 
