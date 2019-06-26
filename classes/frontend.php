@@ -84,7 +84,7 @@ class frontend extends \core_availability\frontend {
         global $CFG;
         require_once($CFG->dirroot.'/cohort/lib.php');
 
-        return cohort_get_available_cohorts($context);
+        return cohort_get_available_cohorts($context, 0, 0, 0);
     }
 
     /**
