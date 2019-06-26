@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v3.7-r2
 
 * 2019-06-26 - Fixed bug that only 25 cohorts will be displayed.
 
