@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v3.8-r1
 
 * 2020-02-12 - Prepare compatibility for Moodle 3.8.
 
