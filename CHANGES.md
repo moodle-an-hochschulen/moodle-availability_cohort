@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2021-01-09 - Fix Behat test after upstream change in cohort management (see MDL-67278 for details)
 * 2021-01-09 - PHPUnit: Remove deprecated assertContains() uses on strings for Moodle 3.10 (see MDL-67673 for details)
 * 2021-01-09 - Fix PHPUnit function declaration for Moodle 3.10.
 * 2021-01-09 - Prepare compatibility for Moodle 3.10.

@@ -130,13 +130,15 @@ Feature: availability_cohort
     And I set the following fields to these values:
       | name      | Cohort 3   |
       | idnumber  | CH3        |
-      | contextid | Category 1 |
+    And I expand the "Context" autocomplete
+    And I click on "Category 1" item in the autocomplete list
     And I click on "Save changes" "button"
     And I click on "Add new cohort" "link"
     And I set the following fields to these values:
       | name      | Cohort 4   |
       | idnumber  | CH4        |
-      | contextid | Category 2 |
+    And I expand the "Context" autocomplete
+    And I click on "Category 2" item in the autocomplete list
     And I click on "Save changes" "button"
 
     # Login as teacher 1.
