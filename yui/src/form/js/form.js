@@ -3,7 +3,7 @@
  *
  * @module moodle-availability_cohort-form
  */
-M.availability_cohort = M.availability_cohort || {};
+M.availability_cohort = M.availability_cohort || {}; // eslint-disable-line camelcase
 
 /**
  * @class M.availability_cohort.form
