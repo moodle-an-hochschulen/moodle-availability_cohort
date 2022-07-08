@@ -23,9 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-use availability_cohort\condition;
+namespace availability_cohort;
 
 /**
  * Unit tests for the condition.
@@ -35,7 +33,7 @@ use availability_cohort\condition;
  *              based on code of availability_group 2014 The Open University
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class availability_cohort_condition_testcase extends advanced_testcase {
+class condition_test extends \advanced_testcase {
     /**
      * Load required classes.
      */
@@ -115,7 +113,7 @@ class availability_cohort_condition_testcase extends advanced_testcase {
         try {
             $cond = new condition($structure);
             $this->fail();
-        } catch (coding_exception $e) {
+        } catch (\coding_exception $e) {
             $this->assertStringContainsString('Invalid ->id', $e->getMessage());
         }
 
