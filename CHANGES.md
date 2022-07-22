@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v3.11-r3
 
 * 2022-07-20 - Bugfix: Copying a course failed if a cohort condition was added to a activity - Credits to Andrew Hancox
 * 2022-07-10 - Add Visual checks section to UPGRADE.md
