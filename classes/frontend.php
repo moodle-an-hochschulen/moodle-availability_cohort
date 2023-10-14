@@ -42,7 +42,7 @@ class frontend extends \core_availability\frontend {
      * @return array
      */
     protected function get_javascript_strings() {
-        return array('anycohort');
+        return ['anycohort'];
     }
 
     /**
@@ -62,14 +62,14 @@ class frontend extends \core_availability\frontend {
         $allcohorts = $this->get_all_current_context_cohorts($context);
 
         // Change to JS array format and return.
-        $jsarray = array();
+        $jsarray = [];
         foreach ($allcohorts as $rec) {
 
-            $jsarray[] = (object)array('id' => $rec->id, 'name' =>
-                    format_string($rec->name, true));
+            $jsarray[] = (object)['id' => $rec->id, 'name' =>
+                    format_string($rec->name, true), ];
         }
 
-        return array($jsarray);
+        return [$jsarray];
     }
 
     /**

@@ -66,5 +66,5 @@ function availability_cohort_cohort_get_cohorts($currentcontext) {
     // Get all cohorts for the currentcontext with all parent contexts.
     $cohorts = $DB->get_records_list('cohort', 'contextid', $contextids);
 
-    return array('cohorts' => $cohorts);
+    return ['cohorts' => $cohorts];
 }
