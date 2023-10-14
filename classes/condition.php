@@ -35,7 +35,7 @@ namespace availability_cohort;
  */
 class condition extends \core_availability\condition {
     /** @var array Array from cohort id => name */
-    protected static $cohortnames = array();
+    protected static $cohortnames = [];
 
     /** @var int ID of cohort that this condition requires, or 0 = any cohort */
     protected $cohortid;
@@ -63,7 +63,7 @@ class condition extends \core_availability\condition {
      * @return (object)array.
      */
     public function save() {
-        $result = (object)array('type' => 'cohort');
+        $result = (object)['type' => 'cohort'];
         if ($this->cohortid) {
             $result->id = $this->cohortid;
         }
@@ -98,7 +98,7 @@ class condition extends \core_availability\condition {
         require_once($CFG->dirroot . '/cohort/lib.php');
         require_once($CFG->dirroot . '/availability/condition/cohort/locallib.php');
 
-        $cohortids = array();
+        $cohortids = [];
         // Cohort condition is set to a specific cohort.
         if ($this->cohortid) {
             // User is member of the given cohort.
@@ -154,7 +154,7 @@ class condition extends \core_availability\condition {
             // a database query. To save queries, get all cohorts for course at
             // once in a static cache.
             if (!array_key_exists($this->cohortid, self::$cohortnames)) {
-                $cohorts = $DB->get_records('cohort', array('id' => $this->cohortid), '', 'id, name');
+                $cohorts = $DB->get_records('cohort', ['id' => $this->cohortid], '', 'id, name');
                 foreach ($cohorts as $rec) {
                     self::$cohortnames[$rec->id] = $rec->name;
                 }
@@ -209,7 +209,7 @@ class condition extends \core_availability\condition {
         if ($restorecontroller->is_samesite()) {
             // The cohort with the same id is existent
             // and this cohort belongs to the same context.
-            if ($DB->record_exists('cohort', array('id' => $this->cohortid)) &&
+            if ($DB->record_exists('cohort', ['id' => $this->cohortid]) &&
                     cohort_get_cohort($this->cohortid, \context_course::instance($courseid))) {
                 $returnvalue = true;
             } else if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)))) {
@@ -238,7 +238,7 @@ class condition extends \core_availability\condition {
      * Wipes the static cache used to store cohort names.
      */
     public static function wipe_static_cache() {
-        self::$cohortnames = array();
+        self::$cohortnames = [];
     }
 
     /**
@@ -251,7 +251,7 @@ class condition extends \core_availability\condition {
      * @return stdClass Object representing condition
      */
     public static function get_json($cohortid = 0) {
-        $result = (object)array('type' => 'cohort');
+        $result = (object)['type' => 'cohort'];
         // Id is only included if set.
         if ($cohortid) {
             $result->id = (int)$cohortid;

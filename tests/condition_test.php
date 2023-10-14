@@ -65,11 +65,11 @@ class condition_test extends \advanced_testcase {
         $info = new \core_availability\mock_info($course, $user->id);
 
         // Make two cohorts.
-        $cohort1 = $generator->create_cohort(array('idnumber' => 1, 'name' => 'Cohort 1'));
-        $cohort2 = $generator->create_cohort(array('idnumber' => 2, 'name' => 'Cohort 2'));
+        $cohort1 = $generator->create_cohort(['idnumber' => 1, 'name' => 'Cohort 1']);
+        $cohort2 = $generator->create_cohort(['idnumber' => 2, 'name' => 'Cohort 2']);
 
         // Do test (not in cohort).
-        $cond = new condition((object)array('id' => (int)$cohort1->id));
+        $cond = new condition((object)['id' => (int)$cohort1->id]);
 
         // Check if available (when not available).
         $this->assertFalse($cond->is_available(false, $info, true, $user->id));
@@ -89,18 +89,18 @@ class condition_test extends \advanced_testcase {
         $this->assertMatchesRegularExpression('~do <strong>not</strong> belong to .*<strong>Cohort 1</strong>~', $information);
 
         // Check cohort 2 works also.
-        $cond = new condition((object)array('id' => (int)$cohort2->id));
+        $cond = new condition((object)['id' => (int)$cohort2->id]);
         $this->assertTrue($cond->is_available(false, $info, true, $user->id));
 
         // What about an 'any cohort' condition?
-        $cond = new condition((object)array());
+        $cond = new condition((object)[]);
         $this->assertTrue($cond->is_available(false, $info, true, $user->id));
         $this->assertFalse($cond->is_available(true, $info, true, $user->id));
         $information = $cond->get_description(false, true, $info);
         $this->assertMatchesRegularExpression('~do <strong>not</strong> belong to <strong>any cohort</strong>~', $information);
 
         // Cohort that doesn't exist uses 'missing' text.
-        $cond = new condition((object)array('id' => $cohort2->id + 1000));
+        $cond = new condition((object)['id' => $cohort2->id + 1000]);
         $this->assertFalse($cond->is_available(false, $info, true, $user->id));
         $information = $cond->get_description(false, false, $info);
         $this->assertMatchesRegularExpression('~You belong to.*\(Missing cohort\)~', $information);
@@ -114,7 +114,7 @@ class condition_test extends \advanced_testcase {
      */
     public function test_constructor() {
         // Invalid id (not int).
-        $structure = (object)array('id' => 'bourne');
+        $structure = (object)['id' => 'bourne'];
         try {
             $cond = new condition($structure);
             $this->fail();
@@ -139,12 +139,12 @@ class condition_test extends \advanced_testcase {
      * @covers \availability_cohort\condition::save()
      */
     public function test_save() {
-        $structure = (object)array('id' => 123);
+        $structure = (object)['id' => 123];
         $cond = new condition($structure);
         $structure->type = 'cohort';
         $this->assertEquals($structure, $cond->save());
 
-        $structure = (object)array();
+        $structure = (object)[];
         $cond = new condition($structure);
         $structure->type = 'cohort';
         $this->assertEquals($structure, $cond->save());
