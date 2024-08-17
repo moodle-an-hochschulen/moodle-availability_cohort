@@ -26,12 +26,12 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['anycohort'] = '(Any cohort)';
 $string['description'] = 'Allow only students who belong to a specified cohort.';
+$string['error_selectcohort'] = 'You must select a cohort.';
 $string['missing'] = '(Missing cohort)';
 $string['pluginname'] = 'Restriction by cohort';
-$string['error_selectcohort'] = 'You must select a cohort.';
+$string['privacy:metadata'] = 'The Restriction by cohort plugin does not store any personal data.';
 $string['requires_anycohort'] = 'You belong to <strong>any cohort</strong>';
 $string['requires_cohort'] = 'You belong to <strong>{$a}</strong>';
 $string['requires_notanycohort'] = 'You do <strong>not</strong> belong to <strong>any cohort</strong>';
 $string['requires_notcohort'] = 'You do <strong>not</strong> belong to <strong>{$a}</strong>';
 $string['title'] = 'Cohort';
-$string['privacy:metadata'] = 'The Restriction by cohort plugin does not store any personal data.';
