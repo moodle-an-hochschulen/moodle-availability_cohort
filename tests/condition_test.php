@@ -33,7 +33,7 @@ namespace availability_cohort;
  *              based on code of availability_group 2014 The Open University
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class condition_test extends \advanced_testcase {
+final class condition_test extends \advanced_testcase {
     /**
      * Load required classes.
      */
@@ -49,7 +49,7 @@ class condition_test extends \advanced_testcase {
      * @covers \availability_cohort\condition::is_available()
      * @covers \availability_cohort\condition::get_description()
      */
-    public function test_usage() {
+    public function test_usage(): void {
         global $CFG, $USER;
         $this->resetAfterTest();
         $CFG->enableavailability = true;
@@ -112,7 +112,7 @@ class condition_test extends \advanced_testcase {
      *
      * @covers \availability_cohort\condition::__construct()
      */
-    public function test_constructor() {
+    public function test_constructor(): void {
         // Invalid id (not int).
         $structure = (object)['id' => 'bourne'];
         try {
@@ -138,7 +138,7 @@ class condition_test extends \advanced_testcase {
      *
      * @covers \availability_cohort\condition::save()
      */
-    public function test_save() {
+    public function test_save(): void {
         $structure = (object)['id' => 123];
         $cond = new condition($structure);
         $structure->type = 'cohort';

@@ -54,8 +54,8 @@ class frontend extends \core_availability\frontend {
      *
      * @return array
      */
-    protected function get_javascript_init_params($course, \cm_info $cm = null,
-            \section_info $section = null) {
+    protected function get_javascript_init_params($course, ?\cm_info $cm = null,
+            ?\section_info $section = null) {
         // Get course context.
         $context = \context_course::instance($course->id);
         // Get all cohorts.
@@ -94,8 +94,8 @@ class frontend extends \core_availability\frontend {
      *
      * @return bool
      */
-    protected function allow_add($course, \cm_info $cm = null,
-            \section_info $section = null) {
+    protected function allow_add($course, ?\cm_info $cm = null,
+            ?\section_info $section = null) {
 
         // Only show this option if there are some cohorts.
         return count($this->get_all_current_context_cohorts(\context_course::instance($course->id))) > 0;
