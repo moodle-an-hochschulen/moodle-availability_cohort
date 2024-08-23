@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v4.1-r4
 
 * 2024-08-23 - Bugfix: Fix 'Invalid database query parameter value' exception when restoring course with 'Any cohort' restriction, thanks to mi-dave.
 
