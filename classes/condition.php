@@ -212,7 +212,7 @@ class condition extends \core_availability\condition {
             if ($DB->record_exists('cohort', ['id' => $this->cohortid]) &&
                     cohort_get_cohort($this->cohortid, \context_course::instance($courseid))) {
                 $returnvalue = true;
-            } else if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)))) {
+            } else if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)->id))) {
                 // The setting was set to any cohort and cohorts have not been deleted in the meantime.
                 // Import the activity with the condition.
                 $returnvalue = true;
@@ -223,7 +223,7 @@ class condition extends \core_availability\condition {
         } else {
             // We are not on the same instance.
             // We have to check if the setting was set to any cohort and cohorts exist on the new instance.
-            if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)))) {
+            if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)->id))) {
                 $returnvalue = true;
             } else {
                 // Availability was not set to any cohort, so do not include.
