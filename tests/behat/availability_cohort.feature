@@ -29,7 +29,7 @@ Feature: availability_cohort
   Scenario: Try to add a cohort condition if no cohorts exist yet
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     Then "Cohort" "button" should not exist in the "Add restriction..." "dialogue"
@@ -41,7 +41,7 @@ Feature: availability_cohort
       | Cohort 2 | CH2      |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     Then "Cohort" "button" should exist in the "Add restriction..." "dialogue"
@@ -53,7 +53,7 @@ Feature: availability_cohort
       | Cohort 2 | CH2      |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Cohort" "button"
@@ -76,7 +76,7 @@ Feature: availability_cohort
       | Cohort 2 | CH2      |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I set the following fields to these values:
       | Name         | P1 |
       | Description  | x  |
@@ -87,7 +87,7 @@ Feature: availability_cohort
     And I set the field "Cohort" to "Cohort 1"
     And I click on ".availability-item .availability-eye img" "css_element"
     And I click on "Save and return to course" "button"
-    And I add a "Page" to section "2"
+    And I add a page to section "2" using the activity chooser
     And I set the following fields to these values:
       | Name         | P2 |
       | Description  | x  |
@@ -115,7 +115,7 @@ Feature: availability_cohort
       | student2 | CH2    |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Cohort" "button"
@@ -146,7 +146,7 @@ Feature: availability_cohort
       | student2 | CH2    |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I set the following fields to these values:
       | Name         | P1 |
       | Description  | x  |
@@ -157,7 +157,7 @@ Feature: availability_cohort
     And I set the field "Cohort" to "Cohort 1"
     And I click on ".availability-item .availability-eye img" "css_element"
     And I click on "Save and return to course" "button"
-    And I add a "Page" to section "2"
+    And I add a page to section "2" using the activity chooser
     And I set the following fields to these values:
       | Name         | P2 |
       | Description  | x  |
@@ -186,7 +186,7 @@ Feature: availability_cohort
       | Cohort in category 2 | CCH2     | Category     | CAT2      | 1       |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I set the following fields to these values:
       | Name         | P1 |
       | Description  | x  |
@@ -199,7 +199,7 @@ Feature: availability_cohort
     And I log out
     And I log in as "teacher2"
     And I am on "Course 2" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I add a page to section "1" using the activity chooser
     And I set the following fields to these values:
       | Name         | P1 |
       | Description  | x  |
