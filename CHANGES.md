@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2024-10-27 - Release: Revert a stale YUI module build which sneaked into v4.3-r4 unfortunately.
+
 ### v4.3-r4
 
 * 2024-10-27 - Tests: Call parent setup() function when instantiating PHPUnit tests.
