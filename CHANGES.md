@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2024-10-27 - Tests: Call parent setup() function when instantiating PHPUnit tests.
+
 ### v4.1-r4
 
 * 2024-08-23 - Bugfix: Fix 'Invalid database query parameter value' exception when restoring course with 'Any cohort' restriction, thanks to mi-dave.
