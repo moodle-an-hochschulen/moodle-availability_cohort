@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v4.1-r5
 
 * 2024-10-27 - Tests: Call parent setup() function when instantiating PHPUnit tests.
 
