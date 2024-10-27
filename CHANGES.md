@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v4.3-r5
 
 * 2024-10-27 - Release: Revert a stale YUI module build which sneaked into v4.3-r4 unfortunately.
 
