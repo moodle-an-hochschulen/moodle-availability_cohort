@@ -44,7 +44,7 @@ M.availability_cohort.form.getNode = function(json) {
         html += '<option value="' + cohort.id + '">' + cohort.name + '</option>';
     }
     html += '</select></span></label>';
-    var node = Y.Node.create('<span class="d-flex flex-wrap align-items-center">' + html + '</span>');
+    var node = Y.Node.create('<span class="form-inline">' + html + '</span>');
 
     // Set initial values (leave default 'choose' if creating afresh).
     if (json.creating === undefined) {
