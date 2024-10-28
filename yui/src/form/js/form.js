@@ -31,7 +31,7 @@ M.availability_cohort.form.initInner = function(cohorts) {
 
 M.availability_cohort.form.getNode = function(json) {
     // Create HTML structure.
-    var html = '<label><span class="pr-3">' + M.util.get_string('title', 'availability_cohort') + '</span> ' +
+    var html = '<label><span class="pe-3">' + M.util.get_string('title', 'availability_cohort') + '</span> ' +
             '<span class="availability-cohort">' +
             '<select name="id" class="custom-select">' +
             '<option value="choose">' + M.util.get_string('choosedots', 'moodle') + '</option>' +
