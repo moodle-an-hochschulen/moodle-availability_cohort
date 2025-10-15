@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2025-10-15 - Tests: Switch Github actions workflows to reusable workflows by Moodle an Hochschulen e.V.
+
 ### v4.5-r1
 
 * 2024-10-14 - Upgrade: Adopt changes from MDL-81818 to remove old bootstrap classes
