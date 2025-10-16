@@ -33,7 +33,7 @@ function availability_cohort_is_member($userid, $cohorts) {
     global $DB;
     if (!empty($cohorts)) {
         // Create IN statement for cohorts.
-        list($in, $params) = $DB->get_in_or_equal($cohorts);
+        [$in, $params] = $DB->get_in_or_equal($cohorts);
         // Add param for userid.
         $params[] = $userid;
         // Return true if "userid = " . $userid . " AND cohortid IN " . $cohorts.

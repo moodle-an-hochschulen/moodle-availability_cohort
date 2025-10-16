@@ -167,12 +167,17 @@ class condition extends \core_availability\condition {
                 $name = format_string(self::$cohortnames[$this->cohortid], true);
             }
         } else {
-            return get_string($not ? 'requires_notanycohort' : 'requires_anycohort',
-                    'availability_cohort');
+            return get_string(
+                $not ? 'requires_notanycohort' : 'requires_anycohort',
+                'availability_cohort'
+            );
         }
 
-        return get_string($not ? 'requires_notcohort' : 'requires_cohort',
-                'availability_cohort', $name);
+        return get_string(
+            $not ? 'requires_notcohort' : 'requires_cohort',
+            'availability_cohort',
+            $name
+        );
     }
 
     /**
@@ -196,11 +201,16 @@ class condition extends \core_availability\condition {
      * @param \base_task $task Current restore task
      * @return bool True if there was any change
      */
-    public function include_after_restore($restoreid, $courseid, \base_logger $logger,
-        $name, \base_task $task) {
+    public function include_after_restore(
+        $restoreid,
+        $courseid,
+        \base_logger $logger,
+        $name,
+        \base_task $task
+    ) {
         global $DB, $CFG;
 
-        require_once($CFG->dirroot.'/cohort/lib.php');
+        require_once($CFG->dirroot . '/cohort/lib.php');
 
         // Load the restore controller.
         $restorecontroller = \restore_controller::load_controller($restoreid);
@@ -209,8 +219,10 @@ class condition extends \core_availability\condition {
         if ($restorecontroller->is_samesite()) {
             // The cohort with the same id is existent
             // and this cohort belongs to the same context.
-            if ($DB->record_exists('cohort', ['id' => $this->cohortid]) &&
-                    cohort_get_cohort($this->cohortid, \context_course::instance($courseid))) {
+            if (
+                $DB->record_exists('cohort', ['id' => $this->cohortid]) &&
+                    cohort_get_cohort($this->cohortid, \context_course::instance($courseid))
+            ) {
                 $returnvalue = true;
             } else if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)->id))) {
                 // The setting was set to any cohort and cohorts have not been deleted in the meantime.
