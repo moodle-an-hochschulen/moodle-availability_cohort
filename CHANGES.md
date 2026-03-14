@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v5.0-r3
 
 * 2026-03-14 - Bootstrap Update: Replace custom-select class with form-select
 
