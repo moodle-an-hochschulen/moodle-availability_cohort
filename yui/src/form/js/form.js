@@ -33,7 +33,7 @@ M.availability_cohort.form.getNode = function(json) {
     // Create HTML structure.
     var html = '<label><span class="pe-3">' + M.util.get_string('title', 'availability_cohort') + '</span> ' +
             '<span class="availability-cohort">' +
-            '<select name="id" class="custom-select">' +
+            '<select name="id" class="form-select">' +
             '<option value="choose">' + M.util.get_string('choosedots', 'moodle') + '</option>' +
             '<option value="any">' + M.util.get_string('anycohort', 'availability_cohort') + '</option>';
     for (var i = 0; i < this.cohorts.length; i++) {
