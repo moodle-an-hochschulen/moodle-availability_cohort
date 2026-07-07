@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2026-07-05 - Bugfix: Optionally remove orphaned cohort restrictions when a cohort is deleted, so that affected activities and sections do not stay hidden from everyone, resolves #18.
+
 ### v4.5-r2
 
 * 2025-10-15 - Make codechecker happy again
