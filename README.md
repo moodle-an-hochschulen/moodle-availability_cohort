@@ -44,6 +44,14 @@ Teachers (and other users with editing rights) can add the "cohort" availability
 
 If you want to learn more about using availability plugins in Moodle, please see https://docs.moodle.org/en/Restrict_access.
 
+To further configure the plugin and its behaviour, please visit: Site administration -> Plugins -> Availability restrictions -> Restriction by cohort
+
+There, you find a setting section:
+
+### 1. Clean up restrictions on cohort deletion
+
+With this setting, you can control whether the plugin automatically removes all availability restrictions which require a particular cohort as soon as this cohort is deleted (see the "How this plugin works / Pitfalls" section below for details). This setting is disabled by default.
+
 
 Capabilities
 ------------
@@ -61,6 +69,10 @@ How this plugin works / Pitfalls
 --------------------------------
 
 We created this availability plugin to ease the use case which is described above. The availability plugin just checks if the user is in the given cohort and, if yes, grants access to the restricted activity.
+
+Please note that the restriction is based on the cohort _membership_ of a user and is completely independent of any cohort _enrolment_ into the course. This means that removing a cohort's enrolment (i.e. the cohort sync enrolment method) from a course does not remove the cohort restrictions in that course - the restrictions keep working as long as the cohort and its members exist.
+
+If a cohort is _deleted_ entirely and the "Clean up restrictions on cohort deletion" setting is enabled, the plugin removes all restrictions which require this particular cohort from the affected activities and sections. This prevents these activities and sections from staying hidden from everyone due to an orphaned restriction which can never be fulfilled anymore. As this cleanup changes existing availability restrictions in a way which can not be undone, it is disabled by default and has to be enabled explicitly on the plugin settings page. If it is disabled, an orphaned restriction remains in place and is shown as "(Missing cohort)" instead.
 
 
 Theme support
