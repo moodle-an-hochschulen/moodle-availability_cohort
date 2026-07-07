@@ -25,6 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['anycohort'] = '(Any cohort)';
+$string['cleanuponcohortdeletion'] = 'Clean up restrictions on cohort deletion';
+$string['cleanuponcohortdeletion_desc'] = 'If enabled, all availability restrictions which require a particular cohort are automatically removed from all activities and sections as soon as this cohort is deleted. This prevents these activities and sections from staying hidden from everyone due to an orphaned restriction which can never be fulfilled anymore.<br />If disabled, the restrictions remain in place and are shown as \'{$a}\' instead.';
 $string['description'] = 'Allow only students who belong to a specified cohort.';
 $string['error_selectcohort'] = 'You must select a cohort.';
 $string['missing'] = '(Missing cohort)';

@@ -15,18 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Availability Cohort - Version file
+ * Availability cohort - Settings file
  *
- * @package    availability_cohort
- * @copyright  2018 Kathrin Osswald, Ulm University <kathrin.osswald@uni-ulm.de>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     availability_cohort
+ * @copyright   2026 Alexander Bias <bias@alexanderbias.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'availability_cohort';
-$plugin->version = 2026042001;
-$plugin->release = 'v5.2-r1';
-$plugin->requires = 2026042000;
-$plugin->supported = [502, 502];
-$plugin->maturity = MATURITY_STABLE;
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_configcheckbox(
+        'availability_cohort/cleanuponcohortdeletion',
+        new \core\lang_string('cleanuponcohortdeletion', 'availability_cohort'),
+        new \core\lang_string(
+            'cleanuponcohortdeletion_desc',
+            'availability_cohort',
+            new \core\lang_string('missing', 'availability_cohort')
+        ),
+        0
+    ));
+}
