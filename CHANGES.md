@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2026-07-05 - Bugfix: Optionally remove orphaned cohort restrictions when a cohort is deleted, so that affected activities and sections do not stay hidden from everyone, resolves #18.
+
 ### v5.0-r3
 
 * 2026-03-14 - Bootstrap Update: Replace custom-select class with form-select

@@ -15,18 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Availability Cohort - Version file
+ * Availability cohort - Event observers
  *
- * @package    availability_cohort
- * @copyright  2018 Kathrin Osswald, Ulm University <kathrin.osswald@uni-ulm.de>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     availability_cohort
+ * @copyright   2026 Alexander Bias <bias@alexanderbias.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'availability_cohort';
-$plugin->version = 2025041403;
-$plugin->release = 'v5.0-r3';
-$plugin->requires = 2025041400;
-$plugin->supported = [500, 500];
-$plugin->maturity = MATURITY_STABLE;
+$observers = [
+    [
+        'eventname' => '\core\event\cohort_deleted',
+        'callback' => '\availability_cohort\observer::cohort_deleted',
+    ],
+];
