@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2026-10-10 - Bugfix: Defer the formatting of the cohort name in the restriction description with description_format_string() to avoid a '$PAGE->context was not set' debugging notice when a student opens a cohort-restricted activity directly, resolves #22.
+
 ### v4.5-r3
 
 * 2026-07-05 - Bugfix: Optionally remove orphaned cohort restrictions when a cohort is deleted, so that affected activities and sections do not stay hidden from everyone, resolves #18.
