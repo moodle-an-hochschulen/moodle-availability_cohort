@@ -164,7 +164,9 @@ class condition extends \core_availability\condition {
             if (!array_key_exists($this->cohortid, self::$cohortnames)) {
                 $name = get_string('missing', 'availability_cohort');
             } else {
-                $name = format_string(self::$cohortnames[$this->cohortid], true);
+                // Not safe to call format_string here as $PAGE->context might not be set yet;
+                // use the special function to call it later in info::format_info().
+                $name = self::description_format_string(self::$cohortnames[$this->cohortid]);
             }
         } else {
             return get_string(
