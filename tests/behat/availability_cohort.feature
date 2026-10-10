@@ -210,6 +210,27 @@ Feature: availability_cohort
     Then the "Cohort" select box should contain "Cohort in category 2"
     And the "Cohort" select box should not contain "Cohort in category 1"
 
+  Scenario: Open a cohort-restricted page activity directly as a student who does not fulfil the restriction
+    Given the following "cohorts" exist:
+      | name     | idnumber |
+      | Cohort 1 | CH1      |
+    And I log in as "teacher1"
+    And I am on "Course 1" course homepage with editing mode on
+    And I add a page to section "1" using the activity chooser
+    And I set the following fields to these values:
+      | Name         | P1 |
+      | Description  | x  |
+      | Page content | x  |
+    And I expand all fieldsets
+    And I click on "Add restriction..." "button"
+    And I click on "Cohort" "button"
+    And I set the field "Cohort" to "Cohort 1"
+    And I click on "Save and return to course" "button"
+    When I log out
+    And I log in as "student1"
+    And I am on the "P1" "page activity" page
+    Then I should see "You belong to Cohort 1" in the "region-main" "region"
+
   Scenario Outline: Deleting a cohort removes only the restrictions which require exactly this cohort, and only if the cleanup is enabled
     Given the following config values are set as admin:
       | cleanuponcohortdeletion | <cleanup> | availability_cohort |

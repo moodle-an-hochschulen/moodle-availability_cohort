@@ -78,6 +78,7 @@ final class condition_test extends \advanced_testcase {
         // Check if available (when not available).
         $this->assertFalse($cond->is_available(false, $info, true, $user->id));
         $information = $cond->get_description(false, false, $info);
+        $information = \core_availability\info::format_info($information, $course);
         $this->assertMatchesRegularExpression('~You belong to .*<strong>Cohort 1</strong>~', $information);
         $this->assertTrue($cond->is_available(true, $info, true, $user->id));
 
@@ -90,6 +91,7 @@ final class condition_test extends \advanced_testcase {
         $this->assertTrue($cond->is_available(false, $info, true, $user->id));
         $this->assertFalse($cond->is_available(true, $info, true, $user->id));
         $information = $cond->get_description(false, true, $info);
+        $information = \core_availability\info::format_info($information, $course);
         $this->assertMatchesRegularExpression('~do <strong>not</strong> belong to .*<strong>Cohort 1</strong>~', $information);
 
         // Check cohort 2 works also.
@@ -107,6 +109,7 @@ final class condition_test extends \advanced_testcase {
         $cond = new condition((object)['id' => $cohort2->id + 1000]);
         $this->assertFalse($cond->is_available(false, $info, true, $user->id));
         $information = $cond->get_description(false, false, $info);
+        $information = \core_availability\info::format_info($information, $course);
         $this->assertMatchesRegularExpression('~You belong to.*\(Missing cohort\)~', $information);
     }
 
