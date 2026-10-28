@@ -114,6 +114,45 @@ final class condition_test extends \advanced_testcase {
     }
 
     /**
+     * Tests that an 'any cohort' condition is evaluated against the course of the checked item
+     * and not against the course in the $COURSE global.
+     *
+     * @covers \availability_cohort\condition::is_available()
+     */
+    public function test_any_cohort_uses_course_of_item(): void {
+        global $CFG, $COURSE;
+        $this->resetAfterTest();
+        $CFG->enableavailability = true;
+
+        // Make two categories with a course each and a user.
+        $generator = $this->getDataGenerator();
+        $categorya = $generator->create_category();
+        $categoryb = $generator->create_category();
+        $coursea = $generator->create_course(['category' => $categorya->id]);
+        $courseb = $generator->create_course(['category' => $categoryb->id]);
+        $user = $generator->create_user();
+        $infoa = new \core_availability\mock_info($coursea, $user->id);
+        $infob = new \core_availability\mock_info($courseb, $user->id);
+
+        // Make a cohort in category A and add the user to it.
+        $cohort = $generator->create_cohort(['contextid' => \context_coursecat::instance($categorya->id)->id]);
+        cohort_add_member($cohort->id, $user->id);
+
+        $cond = new condition((object)[]);
+
+        // Check with $COURSE being the site course (e.g. on the Dashboard or in cron).
+        $COURSE = get_site();
+        $this->assertTrue($cond->is_available(false, $infoa, false, $user->id));
+        $this->assertFalse($cond->is_available(false, $infob, false, $user->id));
+
+        // Check with $COURSE being a course in another category.
+        $COURSE = $courseb;
+        $this->assertTrue($cond->is_available(false, $infoa, false, $user->id));
+        $COURSE = $coursea;
+        $this->assertFalse($cond->is_available(false, $infob, false, $user->id));
+    }
+
+    /**
      * Tests the constructor including error conditions. Also tests the
      * string conversion feature (intended for debugging only).
      *
