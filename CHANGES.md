@@ -4,6 +4,10 @@ moodle-availability_cohort
 Changes
 -------
 
+### Unreleased
+
+* 2026-10-28 - Bugfix: Do not silently drop cohort restrictions when restoring or duplicating a course. Restrictions on existing cohorts are always kept now, even if the restoring user can't view the cohort or the cohort's category is not a parent of the course. Restrictions on cohorts which do not exist on the target site are kept by default or removed if the new 'Clean up restrictions on restore' setting is enabled.
+
 ### v5.0-r5
 
 * 2026-10-10 - Bugfix: Defer the formatting of the cohort name in the restriction description with description_format_string() to avoid a '$PAGE->context was not set' debugging notice when a student opens a cohort-restricted activity directly, resolves #22.
