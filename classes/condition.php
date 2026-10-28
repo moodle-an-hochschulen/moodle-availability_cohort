@@ -34,6 +34,16 @@ namespace availability_cohort;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class condition extends \core_availability\condition {
+    /**
+     * Number of user ids which are checked with one query when filtering a user list.
+     *
+     * Moodle does not expose the databases' limits regarding the number of query parameters, so this follows
+     * the chunk size which is used in core for the same purpose (e.g. core_tag_tag::DELETE_CHUNK_SIZE).
+     *
+     * @var int
+     */
+    protected const USERLIST_CHUNKSIZE = 1000;
+
     /** @var array Array from cohort id => name */
     protected static $cohortnames = [];
 
@@ -113,15 +123,141 @@ class condition extends \core_availability\condition {
             $allow = availability_cohort_is_member($userid, $cohortids);
         }
 
-        // The NOT condition applies before accessallcohorts (i.e. if you
-        // set something to be available to those NOT in cohort X,
-        // people with accessallcohorts can still access it even if
-        // they are in cohort X).
         if ($not) {
             $allow = !$allow;
         }
 
         return $allow;
+    }
+
+    /**
+     * Checks whether this condition applies to user lists.
+     *
+     * Cohort conditions are assumed to be 'permanent' (just like group conditions),
+     * so they affect the display of user lists for activities.
+     *
+     * @return bool True if this condition applies to user lists
+     */
+    public function is_applied_to_user_lists() {
+        return true;
+    }
+
+    /**
+     * Tests this condition against a user list. Users who do not meet the
+     * condition will be removed from the list.
+     *
+     * There is no capability which bypasses the cohort condition in is_available(), so there is none here either.
+     * Users who can view hidden activities / sections are kept by core_availability\info anyway.
+     *
+     * @param array $users Array of userid => object
+     * @param bool $not True if this condition is applying in negative mode
+     * @param \core_availability\info $info Item we're checking
+     * @param \core_availability\capability_checker $checker
+     * @return array Filtered version of input array
+     */
+    public function filter_user_list(
+        array $users,
+        $not,
+        \core_availability\info $info,
+        \core_availability\capability_checker $checker
+    ) {
+        global $DB;
+
+        // If the array is empty already, just return it.
+        if (!$users) {
+            return $users;
+        }
+
+        // List users who match the condition.
+        // Cohorts are not bounded by the course size, so only the members among the given users are fetched.
+        // This is done in chunks to stay within the limits of the databases regarding the number of query parameters.
+        [$membersql, $memberparams] = $this->get_cohort_members_sql($info);
+        $members = [];
+        foreach (array_chunk(array_keys($users), static::USERLIST_CHUNKSIZE) as $userids) {
+            [$usersql, $userparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'availability_cohort_user');
+            $chunkmembers = $DB->get_fieldset_sql(
+                "SELECT members.userid
+                   FROM ($membersql) members
+                  WHERE members.userid $usersql",
+                array_merge($memberparams, $userparams)
+            );
+            $members += array_flip($chunkmembers);
+        }
+
+        // Filter the user list.
+        $result = [];
+        foreach ($users as $id => $user) {
+            $allow = array_key_exists($id, $members);
+            if ($not) {
+                $allow = !$allow;
+            }
+            if ($allow) {
+                $result[$id] = $user;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Obtains SQL that returns a list of enrolled users that has been filtered
+     * by this condition.
+     *
+     * @param bool $not True if this condition is applying in negative mode
+     * @param \core_availability\info $info Item we're checking
+     * @param bool $onlyactive If true, only returns active enrolments
+     * @return array Array with two elements: SQL subquery and parameters array
+     */
+    public function get_user_list_sql($not, \core_availability\info $info, $onlyactive) {
+        // Get all enrolled users.
+        [$enrolsql, $enrolparams] = get_enrolled_sql($info->get_context(), '', 0, $onlyactive);
+
+        // Condition for specified or any cohort.
+        [$membersql, $memberparams] = $this->get_cohort_members_sql($info);
+
+        // Overall query combines all this.
+        $condition = $not ? 'NOT' : '';
+        $sql = "SELECT userids.id
+                  FROM ($enrolsql) userids
+                 WHERE userids.id $condition IN ($membersql)";
+        return [$sql, array_merge($enrolparams, $memberparams)];
+    }
+
+    /**
+     * Obtains SQL that returns the ids of the users who are members of the cohort(s) required by this condition.
+     *
+     * For the 'any cohort' mode, these are the same cohorts which are considered by is_available(), i.e. the cohorts
+     * in the context of the item's course and all its parent contexts.
+     *
+     * @param \core_availability\info $info Item we're checking
+     * @return array Array with two elements: SQL subquery and parameters array
+     */
+    protected function get_cohort_members_sql(\core_availability\info $info) {
+        global $DB;
+
+        $params = [];
+        if ($this->cohortid) {
+            // The members of the given cohort are matched regardless of the cohort's context and visibility.
+            // This is intended and must stay consistent with is_available(), otherwise the user lists would be wrong.
+            // It means that the filtered user lists reveal the cohort membership of enrolled users to staff,
+            // even for a cohort which they can't view (if the cohort id was set by an admin, restored or tampered with).
+            // This is accepted as a low risk, as the availability API does not offer a hook to validate the cohort id
+            // on save and the same information can already be derived through is_available().
+            $sql = "SELECT cm.userid
+                      FROM {cohort_members} cm
+                     WHERE cm.cohortid = " . self::unique_sql_parameter($params, $this->cohortid);
+        } else {
+            $context = \context_course::instance($info->get_course()->id);
+            [$insql, $params] = $DB->get_in_or_equal(
+                $context->get_parent_context_ids(true),
+                SQL_PARAMS_NAMED,
+                'availability_cohort_ctx'
+            );
+            $sql = "SELECT cm.userid
+                      FROM {cohort_members} cm
+                      JOIN {cohort} c ON c.id = cm.cohortid
+                     WHERE c.contextid $insql";
+        }
+        return [$sql, $params];
     }
 
     /**
