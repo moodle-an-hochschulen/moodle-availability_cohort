@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-10-28 - Improvement: Format the cohort names in the restriction editor with the course context explicitly instead of relying on the page context.
 * 2026-10-28 - Bugfix: Evaluate the 'any cohort' restriction against the course of the restricted activity or section instead of the course of the current page, so that it is not checked against the wrong cohorts on cross-course pages like the Dashboard or in scheduled tasks.
 * 2026-10-28 - Bugfix: Do not silently drop cohort restrictions when restoring or duplicating a course. Restrictions on existing cohorts are always kept now, even if the restoring user can't view the cohort or the cohort's category is not a parent of the course. Restrictions on cohorts which do not exist on the target site are kept by default or removed if the new 'Clean up restrictions on restore' setting is enabled.
 
