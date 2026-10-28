@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-10-28 - Documentation: Explain in the README that the 'any cohort' restriction also considers hidden cohorts and cohorts which the editing user can't view.
 * 2026-10-28 - Improvement: Apply cohort restrictions to user lists, just like group restrictions, so that users who are excluded by a cohort restriction are not listed anymore as users who can access the activity or section, for example in the assignment grading table. Users who can view hidden activities or sections are still listed.
 * 2026-10-28 - Improvement: Format the cohort names in the restriction editor with the course context explicitly instead of relying on the page context.
 * 2026-10-28 - Bugfix: Evaluate the 'any cohort' restriction against the course of the restricted activity or section instead of the course of the current page, so that it is not checked against the wrong cohorts on cross-course pages like the Dashboard or in scheduled tasks.
