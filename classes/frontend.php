@@ -68,7 +68,7 @@ class frontend extends \core_availability\frontend {
         $jsarray = [];
         foreach ($allcohorts as $rec) {
             $jsarray[] = (object)['id' => $rec->id, 'name' =>
-                    format_string($rec->name, true), ];
+                    format_string($rec->name, true, ['context' => $context]), ];
         }
 
         return [$jsarray];
