@@ -196,12 +196,17 @@ class condition extends \core_availability\condition {
      * condition may be removed depending on restore settings, which you can get from
      * the $task object.
      *
+     * Restrictions which can't be resolved anymore (the cohort was deleted in the meantime or the backup
+     * comes from another site) are only removed if the cleanuponrestore setting is enabled.
+     * Otherwise, they are kept and can never be fulfilled, just as orphaned restrictions after a cohort deletion.
+     * This way, a restore never silently opens up an activity which was restricted before.
+     *
      * @param string $restoreid Restore ID
      * @param int $courseid ID of target course
      * @param \base_logger $logger Logger for any warnings
      * @param string $name Name of this item (for use in warning messages)
      * @param \base_task $task Current restore task
-     * @return bool True if there was any change
+     * @return bool True if the condition should be included
      */
     public function include_after_restore(
         $restoreid,
@@ -210,42 +215,63 @@ class condition extends \core_availability\condition {
         $name,
         \base_task $task
     ) {
-        global $DB, $CFG;
+        global $DB;
 
-        require_once($CFG->dirroot . '/cohort/lib.php');
-
-        // Load the restore controller.
-        $restorecontroller = \restore_controller::load_controller($restoreid);
-
-        // We are restoring on the same instance.
-        if ($restorecontroller->is_samesite()) {
-            // The cohort with the same id is existent
-            // and this cohort belongs to the same context.
-            if (
-                $DB->record_exists('cohort', ['id' => $this->cohortid]) &&
-                    cohort_get_cohort($this->cohortid, \context_course::instance($courseid))
-            ) {
-                $returnvalue = true;
-            } else if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)->id))) {
-                // The setting was set to any cohort and cohorts have not been deleted in the meantime.
-                // Import the activity with the condition.
-                $returnvalue = true;
-            } else {
-                // Import the activity without the condition.
-                $returnvalue = false;
-            }
-        } else {
-            // We are not on the same instance.
-            // We have to check if the setting was set to any cohort and cohorts exist on the new instance.
-            if ($this->cohortid == 0 && !empty(cohort_get_cohorts(\context_course::instance($courseid)->id))) {
-                $returnvalue = true;
-            } else {
-                // Availability was not set to any cohort, so do not include.
-                $returnvalue = false;
-            }
+        // The condition is set to "any cohort".
+        // This condition does not depend on a particular cohort, so it is always kept.
+        if (!$this->cohortid) {
+            return true;
         }
 
-        return $returnvalue;
+        // We are restoring on the same instance and the cohort still exists.
+        // The cohort membership is evaluated regardless of the cohort's context and visibility in is_available(),
+        // so the condition is kept regardless of these properties as well.
+        if ($task->is_samesite() && $DB->record_exists('cohort', ['id' => $this->cohortid])) {
+            return true;
+        }
+
+        // The cohort can't be resolved anymore and the admin wants orphaned restrictions to be removed.
+        if (get_config('availability_cohort', 'cleanuponrestore')) {
+            $logger->process(
+                'Restored item (' . $name . ') had an availability condition on a cohort which does not exist ' .
+                    'on this site, the condition was removed',
+                \backup::LOG_WARNING
+            );
+            return false;
+        }
+
+        // Otherwise, keep the condition (and let update_after_restore() take care of the cohort id).
+        $logger->process(
+            'Restored item (' . $name . ') has an availability condition on a cohort which does not exist ' .
+                'on this site, the condition can not be fulfilled',
+            \backup::LOG_WARNING
+        );
+        return true;
+    }
+
+    /**
+     * Updates this condition after restore.
+     *
+     * If the backup comes from another site, the cohort id of the original site does not mean anything
+     * on this site and might even point to an unrelated cohort. Thus, it is replaced by an invalid cohort id
+     * which can never be fulfilled. The restore log warning about this has already been added by include_after_restore().
+     *
+     * @param string $restoreid Restore ID
+     * @param int $courseid ID of target course
+     * @param \base_logger $logger Logger for any warnings
+     * @param string $name Name of this item (for use in warning messages)
+     * @return bool True if there was any change
+     */
+    public function update_after_restore($restoreid, $courseid, \base_logger $logger, $name) {
+        // The condition is set to "any cohort" or we are restoring on the same instance.
+        // The cohort id remains valid (or orphaned, if the cohort was deleted in the meantime).
+        if (!$this->cohortid || \core_availability\info::get_restore_task($restoreid)->is_samesite()) {
+            return false;
+        }
+
+        // Otherwise, invalidate the cohort id.
+        $this->cohortid = -1;
+        return true;
     }
 
     /**
