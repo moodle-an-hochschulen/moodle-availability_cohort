@@ -94,10 +94,11 @@ class condition extends \core_availability\condition {
      * @return bool True if available
      */
     public function is_available($not, \core_availability\info $info, $grabthelot, $userid) {
-        global $CFG, $COURSE;
+        global $CFG;
         require_once($CFG->dirroot . '/cohort/lib.php');
         require_once($CFG->dirroot . '/availability/condition/cohort/locallib.php');
 
+        $course = $info->get_course();
         $cohortids = [];
         // Cohort condition is set to a specific cohort.
         if ($this->cohortid) {
@@ -105,7 +106,7 @@ class condition extends \core_availability\condition {
             $allow = cohort_is_member($this->cohortid, $userid);
         } else {
             // Cohort condition is set to "any cohort".
-            $allcohorts = availability_cohort_cohort_get_cohorts(\context_course::instance($COURSE->id));
+            $allcohorts = availability_cohort_cohort_get_cohorts(\context_course::instance($course->id));
             foreach ($allcohorts["cohorts"] as $cohort) {
                 $cohortids[] = $cohort->id;
             }
