@@ -35,4 +35,15 @@ if ($ADMIN->fulltree) {
         ),
         0
     ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'availability_cohort/cleanuponrestore',
+        new \core\lang_string('cleanuponrestore', 'availability_cohort'),
+        new \core\lang_string(
+            'cleanuponrestore_desc',
+            'availability_cohort',
+            new \core\lang_string('missing', 'availability_cohort')
+        ),
+        0
+    ));
 }

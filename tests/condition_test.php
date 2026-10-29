@@ -114,6 +114,176 @@ final class condition_test extends \advanced_testcase {
     }
 
     /**
+     * Tests that an 'any cohort' condition is evaluated against the course of the checked item
+     * and not against the course in the $COURSE global.
+     *
+     * @covers \availability_cohort\condition::is_available()
+     */
+    public function test_any_cohort_uses_course_of_item(): void {
+        global $CFG, $COURSE;
+        $this->resetAfterTest();
+        $CFG->enableavailability = true;
+
+        // Make two categories with a course each and a user.
+        $generator = $this->getDataGenerator();
+        $categorya = $generator->create_category();
+        $categoryb = $generator->create_category();
+        $coursea = $generator->create_course(['category' => $categorya->id]);
+        $courseb = $generator->create_course(['category' => $categoryb->id]);
+        $user = $generator->create_user();
+        $infoa = new \core_availability\mock_info($coursea, $user->id);
+        $infob = new \core_availability\mock_info($courseb, $user->id);
+
+        // Make a cohort in category A and add the user to it.
+        $cohort = $generator->create_cohort(['contextid' => \context_coursecat::instance($categorya->id)->id]);
+        cohort_add_member($cohort->id, $user->id);
+
+        $cond = new condition((object)[]);
+
+        // Check with $COURSE being the site course (e.g. on the Dashboard or in cron).
+        $COURSE = get_site();
+        $this->assertTrue($cond->is_available(false, $infoa, false, $user->id));
+        $this->assertFalse($cond->is_available(false, $infob, false, $user->id));
+
+        // Check with $COURSE being a course in another category.
+        $COURSE = $courseb;
+        $this->assertTrue($cond->is_available(false, $infoa, false, $user->id));
+        $COURSE = $coursea;
+        $this->assertFalse($cond->is_available(false, $infob, false, $user->id));
+    }
+
+    /**
+     * Tests the filter_user_list (bulk checking) function. Also tests the SQL
+     * variant get_user_list_sql.
+     *
+     * @covers \availability_cohort\condition::is_applied_to_user_lists()
+     * @covers \availability_cohort\condition::filter_user_list()
+     * @covers \availability_cohort\condition::get_user_list_sql()
+     */
+    public function test_filter_users(): void {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/cohort/lib.php');
+        $this->resetAfterTest();
+        $CFG->enableavailability = true;
+
+        // Make a test course in a category and some users.
+        $generator = $this->getDataGenerator();
+        $category = $generator->create_category();
+        $othercategory = $generator->create_category();
+        $course = $generator->create_course(['category' => $category->id]);
+        $roleids = $DB->get_records_menu('role', null, '', 'shortname, id');
+        $teacher = $generator->create_user();
+        $generator->enrol_user($teacher->id, $course->id, $roleids['editingteacher']);
+        $allusers = [$teacher->id => $teacher];
+        $students = [];
+        for ($i = 0; $i < 4; $i++) {
+            $student = $generator->create_user();
+            $students[$i] = $student;
+            $generator->enrol_user($student->id, $course->id, $roleids['student']);
+            $allusers[$student->id] = $student;
+        }
+        $info = new \core_availability\mock_info($course);
+        $checker = new \core_availability\capability_checker($info->get_context());
+
+        // Make test cohorts.
+        $cohort1 = $generator->create_cohort(['contextid' => \context_coursecat::instance($category->id)->id]);
+        $cohort2 = $generator->create_cohort(['contextid' => \context_system::instance()->id]);
+        $cohort3 = $generator->create_cohort(['contextid' => \context_coursecat::instance($othercategory->id)->id]);
+
+        // Assign students to cohorts as follows (teacher is not in a cohort):
+        // 0: no cohorts.
+        // 1: in cohort 1 (in the course's category).
+        // 2: in cohort 2 (in the system context).
+        // 3: in cohort 3 (in another category, so it does not count for 'any cohort').
+        cohort_add_member($cohort1->id, $students[1]->id);
+        cohort_add_member($cohort2->id, $students[2]->id);
+        cohort_add_member($cohort3->id, $students[3]->id);
+
+        // Test 'any cohort' condition.
+        $cond = new condition((object)[]);
+        $this->assertTrue($cond->is_applied_to_user_lists());
+        $expected = [$students[1]->id, $students[2]->id];
+        $this->assert_filtered_users($expected, $cond, false, $allusers, $info, $checker);
+
+        // Test NOT version (there is no capability to bypass the condition, so the teacher is not included).
+        $expected = [$teacher->id, $students[0]->id, $students[3]->id];
+        $this->assert_filtered_users($expected, $cond, true, $allusers, $info, $checker);
+
+        // Test specific cohort.
+        $cond = new condition((object)['id' => (int)$cohort1->id]);
+        $expected = [$students[1]->id];
+        $this->assert_filtered_users($expected, $cond, false, $allusers, $info, $checker);
+
+        $expected = [$teacher->id, $students[0]->id, $students[2]->id, $students[3]->id];
+        $this->assert_filtered_users($expected, $cond, true, $allusers, $info, $checker);
+
+        // Test specific cohort in another category (membership is checked regardless of the cohort's context).
+        $cond = new condition((object)['id' => (int)$cohort3->id]);
+        $expected = [$students[3]->id];
+        $this->assert_filtered_users($expected, $cond, false, $allusers, $info, $checker);
+
+        // Test that the user list is filtered correctly if it is checked in several chunks.
+        cohort_add_member($cohort1->id, $students[3]->id);
+        $cond = new class ((object)['id' => (int)$cohort1->id]) extends condition {
+            /** @var int Small chunk size to split the five users into three chunks */
+            protected const USERLIST_CHUNKSIZE = 2;
+        };
+        $expected = [$students[1]->id, $students[3]->id];
+        $this->assert_filtered_users($expected, $cond, false, $allusers, $info, $checker);
+        cohort_remove_member($cohort1->id, $students[3]->id);
+
+        // Test the whole availability API with an activity which is restricted to cohort 3 OR any cohort.
+        // This combines both kinds of SQL within one query and keeps the teacher as they can view hidden activities.
+        $tree = \core_availability\tree::get_root_json([
+            condition::get_json($cohort3->id),
+            condition::get_json(),
+        ], \core_availability\tree::OP_OR);
+        $page = $generator->get_plugin_generator('mod_page')->create_instance(
+            ['course' => $course->id, 'availability' => json_encode($tree)]
+        );
+        $modinfo = get_fast_modinfo($course);
+        $cminfo = new \core_availability\info_module($modinfo->get_cm($page->cmid));
+        $expected = [$teacher->id, $students[1]->id, $students[2]->id, $students[3]->id];
+        $result = array_keys($cminfo->filter_user_list($allusers));
+        sort($result);
+        $this->assertEquals($expected, $result);
+        [$sql, $params] = $cminfo->get_user_list_sql(true);
+        $result = $DB->get_fieldset_sql($sql, $params);
+        sort($result);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Asserts that both filter_user_list() and get_user_list_sql() return the expected users.
+     *
+     * @param array $expected Expected user ids, sorted ascending
+     * @param condition $cond Condition to check
+     * @param bool $not True if the condition is applying in negative mode
+     * @param array $allusers Array of userid => object to filter
+     * @param \core_availability\info $info Item we're checking
+     * @param \core_availability\capability_checker $checker Capability checker
+     */
+    protected function assert_filtered_users(
+        array $expected,
+        condition $cond,
+        bool $not,
+        array $allusers,
+        \core_availability\info $info,
+        \core_availability\capability_checker $checker
+    ): void {
+        global $DB;
+
+        $result = array_keys($cond->filter_user_list($allusers, $not, $info, $checker));
+        sort($result);
+        $this->assertEquals($expected, $result);
+
+        [$sql, $params] = $cond->get_user_list_sql($not, $info, true);
+        $result = $DB->get_fieldset_sql($sql, $params);
+        sort($result);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
      * Tests the constructor including error conditions. Also tests the
      * string conversion feature (intended for debugging only).
      *
