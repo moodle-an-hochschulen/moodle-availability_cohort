@@ -46,11 +46,15 @@ If you want to learn more about using availability plugins in Moodle, please see
 
 To further configure the plugin and its behaviour, please visit: Site administration -> Plugins -> Availability restrictions -> Restriction by cohort
 
-There, you find a setting section:
+There, you find these setting sections:
 
 ### 1. Clean up restrictions on cohort deletion
 
 With this setting, you can control whether the plugin automatically removes all availability restrictions which require a particular cohort as soon as this cohort is deleted (see the "How this plugin works / Pitfalls" section below for details). This setting is disabled by default.
+
+### 2. Clean up restrictions on restore
+
+With this setting, you can control whether the plugin removes availability restrictions which require a particular cohort when a course is restored, imported or duplicated and this cohort does not exist on this site (see the "How this plugin works / Pitfalls" section below for details). This setting is disabled by default.
 
 
 Capabilities
@@ -73,6 +77,10 @@ We created this availability plugin to ease the use case which is described abov
 Please note that the restriction is based on the cohort _membership_ of a user and is completely independent of any cohort _enrolment_ into the course. This means that removing a cohort's enrolment (i.e. the cohort sync enrolment method) from a course does not remove the cohort restrictions in that course - the restrictions keep working as long as the cohort and its members exist.
 
 If a cohort is _deleted_ entirely and the "Clean up restrictions on cohort deletion" setting is enabled, the plugin removes all restrictions which require this particular cohort from the affected activities and sections. This prevents these activities and sections from staying hidden from everyone due to an orphaned restriction which can never be fulfilled anymore. As this cleanup changes existing availability restrictions in a way which can not be undone, it is disabled by default and has to be enabled explicitly on the plugin settings page. If it is disabled, an orphaned restriction remains in place and is shown as "(Missing cohort)" instead.
+
+If a course is restored, imported or duplicated, restrictions which require a cohort which still exists on the same site are always kept, as are restrictions which allow "Any cohort". If a restriction requires a cohort which does not exist (anymore) on the site where the course is restored, for example because the cohort was deleted in the meantime or because the backup comes from another site, the restriction is removed if the "Clean up restrictions on restore" setting is enabled. If it is disabled, the restriction remains in place and is shown as "(Missing cohort)". This way, a restore never silently makes a restricted activity or section available to everyone. In both cases, a warning is added to the restore log. This setting is disabled by default as well.
+
+Please note that the restriction does not take the _visibility_ of a cohort into account, but only checks the cohort membership. When editing a restriction, the cohort selector only lists the cohorts which are visible to the editing user. However, when the restriction is evaluated, the "Any cohort" option considers all cohorts in the context of the course and all its parent contexts (i.e. the course category, its parent categories and the system context), including hidden cohorts and cohorts which the editing user is not allowed to view. This means that a user who is only a member of a hidden cohort fulfils an "Any cohort" restriction and does not fulfil a "Not any cohort" restriction. Likewise, a restriction which requires a particular cohort keeps working if this cohort is hidden later on. This is intended, as the visibility of a cohort only controls in which lists a cohort is shown to the user who manages it and is not meant to change the cohort's membership. The same rules apply to the user lists of a restricted activity or section, for example the assignment grading table, which only list the users who fulfil the restriction.
 
 
 Theme support
