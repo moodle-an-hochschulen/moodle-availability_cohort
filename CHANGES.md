@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v5.3-r2
 
 * 2026-10-28 - Documentation: Explain in the README that the 'any cohort' restriction also considers hidden cohorts and cohorts which the editing user can't view.
 * 2026-10-28 - Improvement: Apply cohort restrictions to user lists, just like group restrictions, so that users who are excluded by a cohort restriction are not listed anymore as users who can access the activity or section, for example in the assignment grading table. Users who can view hidden activities or sections are still listed.
