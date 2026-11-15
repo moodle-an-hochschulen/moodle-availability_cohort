@@ -34,8 +34,11 @@ namespace availability_cohort;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class frontend extends \core_availability\frontend {
-    /** @var array Array of all cohorts */
-    protected $allcohorts;
+    /** @var array|null Array of all cohorts available in the cached context */
+    protected $allcohorts = null;
+
+    /** @var int|null ID of the context that $allcohorts was fetched for */
+    protected $allcohortscontextid = null;
 
     /**
      * Get javascript strings.
@@ -84,7 +87,13 @@ class frontend extends \core_availability\frontend {
         global $CFG;
         require_once($CFG->dirroot . '/cohort/lib.php');
 
-        return cohort_get_available_cohorts($context, 0, 0, 0);
+        // Fetch the cohorts only once per context as this function is called multiple times per form render.
+        if ($this->allcohorts === null || $context->id != $this->allcohortscontextid) {
+            $this->allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
+            $this->allcohortscontextid = $context->id;
+        }
+
+        return $this->allcohorts;
     }
 
     /**
