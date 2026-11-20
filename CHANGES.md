@@ -4,7 +4,7 @@ moodle-availability_cohort
 Changes
 -------
 
-### Unreleased
+### v4.5-r6
 
 * 2026-11-15 - Improvement: Fetch the available cohorts only once per form render in the restriction editor instead of running the same database query twice.
 
